@@ -436,7 +436,32 @@ jenkins:
   rbac:
     install: true
   Pods:
+    vault:
+      Label: vault
+      NodeUsageMode: EXCLUSIVE
+      Containers:
+        vault:
+          Image: "vault"
+          AlwaysPullImage: false
+          Command: cat
+          WorkingDir: /home/jenkins
+          TTY: true
+          EnvVars:
+            - type: Secret
+              key: VAULT_TOKEN
+              secretName: molgenis-pipeline-vault-secret
+              secretKey: token
+            - type: Secret
+              key: VAULT_SKIP_VERIFY
+              secretName: molgenis-pipeline-vault-secret
+              secretKey: skipVerify
+            - type: Secret
+              key: VAULT_ADDR
+              secretName: molgenis-pipeline-vault-secret
+              secretKey: addr
+      NodeSelector: {}
     molgenis:
+      InheritFrom: vault
       Label: molgenis
       NodeUsageMode: NORMAL
       volumes:
@@ -468,25 +493,6 @@ jenkins:
           Command: cat
           WorkingDir: /home/jenkins
           TTY: true
-        vault:
-          Image: "vault"
-          AlwaysPullImage: false
-          Command: cat
-          WorkingDir: /home/jenkins
-          TTY: true
-          EnvVars:
-            - type: Secret
-              key: VAULT_TOKEN
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: token
-            - type: Secret
-              key: VAULT_SKIP_VERIFY
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: skipVerify
-            - type: Secret
-              key: VAULT_ADDR
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: addr
         helm:
           Image: "lachlanevenson/k8s-helm"
           ImageTag: "v2.10.0"
@@ -496,6 +502,7 @@ jenkins:
           TTY: true
       NodeSelector: {}
     node:
+      InheritFrom: vault
       Label: node-carbon
       NodeUsageMode: EXCLUSIVE
       Containers:
@@ -507,25 +514,6 @@ jenkins:
           Command: cat
           WorkingDir: /home/jenkins
           TTY: true
-        vault:
-          Image: "vault"
-          AlwaysPullImage: false
-          Command: cat
-          WorkingDir: /home/jenkins
-          TTY: true
-          EnvVars:
-            - type: Secret
-              key: VAULT_TOKEN
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: token
-            - type: Secret
-              key: VAULT_SKIP_VERIFY
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: skipVerify
-            - type: Secret
-              key: VAULT_ADDR
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: addr
       NodeSelector: {}
     molgenis-it:
       InheritFrom: molgenis
@@ -592,6 +580,7 @@ jenkins:
               memory: "512Mi"
       NodeSelector: {}
     helm:
+      InheritFrom: vault
       Label: helm
       NodeUsageMode: EXCLUSIVE
       Containers:
@@ -608,27 +597,9 @@ jenkins:
           Command: cat
           WorkingDir: /home/jenkins
           TTY: true
-        vault:
-          Image: "vault"
-          AlwaysPullImage: false
-          Command: cat
-          WorkingDir: /home/jenkins
-          TTY: true
-          EnvVars:
-            - type: Secret
-              key: VAULT_TOKEN
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: token
-            - type: Secret
-              key: VAULT_SKIP_VERIFY
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: skipVerify
-            - type: Secret
-              key: VAULT_ADDR
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: addr
       NodeSelector: {}
     ansible:
+      InheritFrom: vault
       Label: ansible
       NodeUsageMode: EXCLUSIVE
       Containers:
@@ -639,25 +610,6 @@ jenkins:
           Command: cat
           WorkingDir: /home/jenkins
           TTY: true
-        vault:
-          Image: "vault"
-          AlwaysPullImage: false
-          Command: cat
-          WorkingDir: /home/jenkins
-          TTY: true
-          EnvVars:
-            - type: Secret
-              key: VAULT_TOKEN
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: token
-            - type: Secret
-              key: VAULT_SKIP_VERIFY
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: skipVerify
-            - type: Secret
-              key: VAULT_ADDR
-              secretName: molgenis-pipeline-vault-secret
-              secretKey: addr
       NodeSelector: {}
 
 # secret contains configuration for the kubernetes secrets that jenkins can access
