@@ -21,6 +21,9 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+shared:
+  issuerUri: 'https://auth.molgenis.org'
+
 server:
   image:
     repository: registry.molgenis.org/molgenis/datashield-service
@@ -62,12 +65,6 @@ server:
         user:
           roles:
             - SU
-        oauth2:
-          resourceserver:
-            jwt:
-              issuer-uri: 'https://auth.molgenis.org'
-            opaquetoken:
-              client-id: 'b396233b-cdb2-449e-ac5c-a0d28b38f791'
 
 molgenis-rserve:
   enabled: true
@@ -134,6 +131,19 @@ minio:
     MINIO_KMS_KES_CERT_FILE: /etc/minio/certs/CAs/client.cert
     MINIO_KMS_KES_KEY_FILE: /etc/minio/certs/CAs/client.key
     MINIO_KMS_AUTO_ENCRYPTION: 'on'
+  nodeSelector:
+    deployPod: "true"
+
+molgenis-auth:
+  enabled: true
+  image:
+    repository: molgenis/molgenis-auth
+    tag: 0.2.0
+  config:
+    nameOverride: auth-config
+  secret:
+    nameOverride: auth-secret
+  # TODO: resources
   nodeSelector:
     deployPod: "true"
 

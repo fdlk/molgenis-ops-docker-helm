@@ -1,0 +1,11 @@
+{{ if .Values.molgenis-auth.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-config
+  labels:
+{{ include "molgenis-armadillo.labels" . | indent 4 }}
+data:
+  ISSUER_BASE_URL: "{{ .Values.shared.issuerUri }}"
+{{ end -}}
+{{ end -}}
